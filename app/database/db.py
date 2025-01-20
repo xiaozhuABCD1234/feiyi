@@ -1,9 +1,9 @@
 # app/database/db.py
 from sqlmodel import Session, create_engine
-from ..models.User import SQLModel
+from ..models.user import SQLModel
 from typing import Annotated,Optional
 from fastapi import Depends
-from app.models.User import User, UserCreate, UserUpdate
+from app.models.user import User, UserCreate, UserUpdate
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"

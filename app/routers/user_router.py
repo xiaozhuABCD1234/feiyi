@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-from app.models.User import User, UserCreate, UserUpdate
+from app.models.user import User, UserCreate, UserUpdate
 from app.database.db import get_session
 
 # 配置密钥和算法
