@@ -44,7 +44,7 @@ def verify_password(plain_password, hashed_password):
 
 def authenticate_user(username: str, password: str, db: Session):
     # 验证用户名和密码
-    user = db.exec(select(User).where(User.UserName == username)).first()
+    user = db.exec(select(User).where(User.name == username)).first()
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -67,7 +67,7 @@ def get_current_user(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = db.exec(select(User).where(User.UserName == username)).first()
+    user = db.exec(select(User).where(User.name == username)).first()
     if user is None:
         raise credentials_exception
     return user
@@ -79,15 +79,11 @@ user = APIRouter()
 @user.post("/", response_model=User)
 async def create_user(user_data: UserCreate, db: Session = Depends(get_session)):
     # 检查用户名是否重复
-    existing_user = db.exec(
-        select(User).where(User.UserName == user_data.UserName)
-    ).first()
+    existing_user = db.exec(select(User).where(User.name == user_data.name)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
     # 检查邮箱是否重复
-    existing_email = db.exec(
-        select(User).where(User.UserEmail == user_data.UserEmail)
-    ).first()
+    existing_email = db.exec(select(User).where(User.email == user_data.email)).first()
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already exists")
 
@@ -125,15 +121,11 @@ async def update_user(
     if not user_db:
         raise HTTPException(status_code=404, detail="User not found")
     # 检查用户名是否重复
-    existing_user = db.exec(
-        select(User).where(User.UserName == user_data.UserName)
-    ).first()
+    existing_user = db.exec(select(User).where(User.name == user_data.name)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
     # 检查邮箱是否重复
-    existing_email = db.exec(
-        select(User).where(User.UserEmail == user_data.UserEmail)
-    ).first()
+    existing_email = db.exec(select(User).where(User.email == user_data.email)).first()
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already exists")
 
@@ -171,7 +163,7 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.UserName}, expires_delta=access_token_expires
+        data={"sub": user.name}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
