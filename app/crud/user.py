@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from app.models.user import User, UserCreate, UserUpdate
 from app.database.db import SessionDep
-from app.core.security import get_password_hash
+from app.core.security import Security
 
 
 async def create_user(user_data: UserCreate, db: SessionDep):
@@ -18,7 +18,7 @@ async def create_user(user_data: UserCreate, db: SessionDep):
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already exists")
 
-    user_data.password = get_password_hash(user_data.password)
+    user_data.password = Security.get_password_hash(user_data.password)
     new_user = User.model_validate(user_data)
     db.add(new_user)
     db.commit()
@@ -54,7 +54,7 @@ async def update_user(user_id: int, user_data: UserUpdate, db: SessionDep):
         raise HTTPException(status_code=400, detail="Email already exists")
 
     if user_data.password:
-        user_data.password = get_password_hash(user_data.password)
+        user_data.password = Security.get_password_hash(user_data.password)
     user_data_dict = user_data.model_dump(exclude_unset=True)
     user_db.sqlmodel_update(user_data_dict)
     db.add(user_db)
@@ -70,7 +70,6 @@ async def delete_user(user_id: int, db: SessionDep):
     db.delete(user)
     db.commit()
     return
-
 
 class CRUDUser:
     @staticmethod
