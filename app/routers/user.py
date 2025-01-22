@@ -1,4 +1,4 @@
-# app/routers/user_router.py
+# app/routers/user.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.models.user import User, UserCreate, UserUpdate
 from app.crud.user import CRUDUser

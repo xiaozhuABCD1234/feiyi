@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from app.database.db import create_db_and_tables
-from app.routers import user_router
+from app.routers import user
 
 app = FastAPI()
 
-app.include_router(user_router.router, prefix="/users", tags=["user"])
+app.include_router(user.router, prefix="/users", tags=["user"])
 # app.include_router(auth.auth, prefix="/user/auth", tags=["auth"])
 
 
