@@ -1,10 +1,7 @@
-# app/models/User.py
-from __future__ import annotations
+# app/models/user.py
+from sqlmodel import Field, SQLModel
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel, Relationship
-from typing import List
 
-# from .post import Post
 
 class UserBase(SQLModel):
     name: str = Field(index=True, unique=True, description="用户名")
@@ -14,7 +11,6 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True, description="用户ID")
     password: str = Field(description="哈系加密后的密码")
-    posts: List["Post"] = Relationship(back_populates="author")
 
 
 class UserCreate(UserBase):

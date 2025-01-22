@@ -4,7 +4,7 @@ from app.routers import user_router
 
 app = FastAPI()
 
-app.include_router(user_router.user, prefix="/users", tags=["user"])
+app.include_router(user_router.router, prefix="/users", tags=["user"])
 # app.include_router(auth.auth, prefix="/user/auth", tags=["auth"])
 
 
