@@ -4,8 +4,8 @@ from sqlmodel import Session, select
 from typing import List, Optional
 
 from app.models.user import User, UserCreate, UserUpdate
-from app.database.db import SessionDep
 from app.core.security import Security
+from app.database.db import SessionDep
 
 
 async def create_user(user_data: UserCreate, db: SessionDep):
@@ -70,6 +70,7 @@ async def delete_user(user_id: int, db: SessionDep):
     db.delete(user)
     db.commit()
     return
+
 
 class CRUDUser:
     @staticmethod

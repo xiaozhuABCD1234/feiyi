@@ -4,7 +4,7 @@ from ..models.user import SQLModel
 from typing import Annotated, Optional
 from fastapi import Depends
 
-from app.models.user import User, UserCreate, UserUpdate
+# from app.models.user import User, UserCreate, UserUpdate
 from app.core.config import settings
 
 sqlite_url = settings.DATABASE_URL
