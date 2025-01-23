@@ -1,10 +1,10 @@
 # app/database/db.py
-from sqlmodel import Session, create_engine
-from ..models.user import SQLModel
+from sqlmodel import Session, create_engine, SQLModel
 from typing import Annotated, Optional
 from fastapi import Depends
 
-# from app.models.user import User, UserCreate, UserUpdate
+from app.models.user import User
+from app.models.post import Post
 from app.core.config import settings
 
 sqlite_url = settings.DATABASE_URL
