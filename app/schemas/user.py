@@ -13,11 +13,13 @@ class UserCreate(UserBase):
     password: str
 
 
-class UserRead(UserBase):
+class UserRead(BaseModel):
     id: int
+    name: str
+    email: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserUpdate(BaseModel):

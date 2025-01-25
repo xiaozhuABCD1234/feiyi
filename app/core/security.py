@@ -9,7 +9,6 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.models import User
-from app.database.db import SessionDep
 from app.core.config import settings
 
 
@@ -61,10 +60,8 @@ class Security:
 
     @staticmethod
     # 验证用户
-    def authenticate_user(
-        db: SessionDep, username: str, password: str
-    ) -> Optional[User]:
-        user = db.exec(select(User).where(User.name == username)).first()
+    async def authenticate_user(username: str, password: str) -> Optional[User]:
+        user = await User.get_or_none(name=username)
         if not user:
             return None
         if not Security.verify_password(password, user.password):
@@ -74,7 +71,6 @@ class Security:
     @staticmethod
     # 从 JWT 令牌中获取当前用户
     async def get_current_user(
-        db: SessionDep,
         token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")),
     ):
         payload = Security.decode_token(token)
@@ -87,7 +83,7 @@ class Security:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
-        user = db.exec(select(User).where(User.name == username)).first()
+        user = await User.get_or_none(name=username)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"

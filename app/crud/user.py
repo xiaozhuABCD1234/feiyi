@@ -2,81 +2,108 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
+from pydantic import EmailStr
 
 from app.models.models import User
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.core.security import Security
-from app.database.db import SessionDep
 
 
-async def create_user(user_data: UserCreate, db: SessionDep):
-    # 检查用户名是否重复
-    existing_user = db.exec(select(User).where(User.name == user_data.name)).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already exists")
-    # 检查邮箱是否重复
-    existing_email = db.exec(select(User).where(User.email == user_data.email)).first()
-    if existing_email:
-        raise HTTPException(status_code=400, detail="Email already exists")
+# 检查用户名是否重复
+async def _check_user_name_is_existing(name: str) -> Optional[User]:
+    user = await User.get_or_none(name=name)
+    if not user:
+        return None
+    raise HTTPException(status_code=400, detail="Username already exists")
 
+
+# 检查邮箱是否重复
+async def _check_user_email_is_existing(email: EmailStr) -> Optional[User]:
+    user = await User.get_or_none(email=email)
+    if not user:
+        return None
+    raise HTTPException(status_code=400, detail="Email already exists")
+
+
+async def create_user(user_data: UserCreate) -> User:
+    await _check_user_email_is_existing(user_data.email)
+    await _check_user_name_is_existing(user_data.name)
     user_data.password = Security.get_password_hash(user_data.password)
-    new_user = User.model_validate(user_data)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    new_user = await User.create(
+        name=user_data.name, email=user_data.email, password=user_data.password
+    )
     return new_user
 
 
-async def read_user_all(
-    db: SessionDep, skip: Optional[int] = 0, limit: Optional[int] = 100
-):
-    users = db.exec(select(User).offset(skip).limit(limit)).all()
-    return users
+async def read_user_all() -> List[UserRead]:
+    users = await User.all()
+    return [UserRead.model_validate(dict(user)) for user in users]
 
 
-async def read_user_id(user_id: int, db: SessionDep) -> UserRead:
-    user = db.get(User, user_id)
+async def read_user_id(user_id: int) -> UserRead:
+    user = await User.get_or_none(id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    user_read = UserRead(id=user.id, name=user.name, email=user.email)
-    return user_read
+    return UserRead.model_validate(user.model_dump())
 
 
-async def update_user(user_id: int, user_data: UserUpdate, db: SessionDep):
-    user_db = db.get(User, user_id)
-    if not user_db:
+async def update_user(user_id: int, user_data: UserUpdate) -> User:
+    user = await User.get_or_none(id=user_id)
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    # 检查用户名是否重复
-    existing_user = db.exec(select(User).where(User.name == user_data.name)).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already exists")
-    # 检查邮箱是否重复
-    existing_email = db.exec(select(User).where(User.email == user_data.email)).first()
-    if existing_email:
-        raise HTTPException(status_code=400, detail="Email already exists")
-
+    await _check_user_email_is_existing(user_data.email)
+    await _check_user_name_is_existing(user_data.name)
     if user_data.password:
         user_data.password = Security.get_password_hash(user_data.password)
-    user_data_dict = user_data.model_dump(exclude_unset=True)
-    user_db.sqlmodel_update(user_data_dict)
-    db.add(user_db)
-    db.commit()
-    db.refresh(user_db)
-    return user_db
+    await user.update_from_dict(user_data.dict(exclude_unset=True))
+    await user.save()
+    return user
 
 
-async def delete_user(user_id: int, db: SessionDep):
-    user = db.get(User, user_id)
+async def read_user_id(user_id: int) -> UserRead:
+    user = await User.get_or_none(id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    db.delete(user)
-    db.commit()
-    return
+    return UserRead.model_validate(user)
+
+
+async def update_user(user_id: int, user_data: UserUpdate) -> User:
+    user = await User.get_or_none(id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    await _check_user_email_is_existing(user_data.email)
+    await _check_user_name_is_existing(user_data.name)
+    if user_data.password:
+        user_data.password = Security.get_password_hash(user_data.password)
+    await user.update_from_dict(user_data.model_dump(exclude_unset=True))
+    await user.save()
+    return user
+
+
+async def delete_user(user_id: int) -> None:
+    user = await User.get_or_none(id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    await user.delete()
 
 
 class CRUDUser:
-    create_user = create_user
-    read_user_all = read_user_all
-    read_user_id = read_user_id
-    update_user = update_user
-    delete_user = delete_user
+    @staticmethod
+    async def create_user(user_data: UserCreate) -> User:
+        return await create_user(user_data)
+
+    @staticmethod
+    async def read_user_all() -> List[UserRead]:
+        return await read_user_all()
+
+    @staticmethod
+    async def read_user_id(user_id: int) -> UserRead:
+        return await read_user_id(user_id)
+
+    @staticmethod
+    async def update_user(user_id: int, user_data: UserUpdate) -> User:
+        return await update_user(user_id, user_data)
+
+    @staticmethod
+    async def delete_user(user_id: int) -> None:
+        return await delete_user(user_id)

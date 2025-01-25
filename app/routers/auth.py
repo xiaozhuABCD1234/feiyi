@@ -3,25 +3,22 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from app.models.models import User
 from app.schemas.user import UserCreate, UserRead
 from app.core.security import Security
-from app.database.db import SessionDep
-from sqlmodel import select
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import timedelta
 from app.crud.user import CRUDUser
 
 router = APIRouter()
 
+# 注册新用户
+@router.post("/register", response_model=UserRead)
+async def register(user: UserCreate):
+    new_user = await CRUDUser.create_user(user)
+    return UserRead.from_orm(new_user)
 
-@router.post("/register", response_model=UserCreate)
-async def register(user: UserCreate, db: SessionDep):
-    return await CRUDUser.create_user(user, db)
-
-
+# 用户登录并获取 JWT 令牌
 @router.post("/token")
-async def login_for_access_token(
-    db: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()
-):
-    user = Security.authenticate_user(db, form_data.username, form_data.password)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await Security.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,7 +32,7 @@ async def login_for_access_token(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-
+# 获取当前登录用户的信息
 @router.get("/me", response_model=UserRead)
 async def read_users_me(current_user: User = Depends(Security.get_current_user)):
     return current_user
