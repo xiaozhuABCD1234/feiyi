@@ -1,28 +1,29 @@
 # app/routers/user.py
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.models.user import User, UserCreate, UserUpdate
+from app.models.models import User
+from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.crud.user import CRUDUser
 from app.database.db import SessionDep
 
 router = APIRouter()
 
 
-@router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserCreate, status_code=status.HTTP_201_CREATED)
 async def register_user(user_data: UserCreate, db: SessionDep):
     return await CRUDUser.create_user(user_data, db)
 
 
-@router.get("/", response_model=list[User])
+@router.get("/", response_model=list[UserRead])
 async def get_all_users(db: SessionDep, skip: int = 0, limit: int = 100):
     return await CRUDUser.read_user_all(db, skip, limit)
 
 
-@router.get("/{user_id}", response_model=User)
+@router.get("/{user_id}", response_model=UserRead)
 async def get_user_by_id(user_id: int, db: SessionDep):
     return await CRUDUser.read_user_id(user_id, db)
 
 
-@router.put("/{user_id}", response_model=User)
+@router.put("/{user_id}", response_model=UserUpdate)
 async def update_user_by_id(user_id: int, user_data: UserUpdate, db: SessionDep):
     return await CRUDUser.update_user(user_id, user_data, db)
 

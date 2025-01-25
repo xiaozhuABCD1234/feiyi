@@ -3,7 +3,8 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
 
-from app.models.user import User, UserCreate, UserUpdate
+from app.models.models import User
+from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.core.security import Security
 from app.database.db import SessionDep
 
@@ -33,11 +34,12 @@ async def read_user_all(
     return users
 
 
-async def read_user_id(user_id: int, db: SessionDep):
+async def read_user_id(user_id: int, db: SessionDep) -> UserRead:
     user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    user_read = UserRead(id=user.id, name=user.name, email=user.email)
+    return user_read
 
 
 async def update_user(user_id: int, user_data: UserUpdate, db: SessionDep):
@@ -73,22 +75,8 @@ async def delete_user(user_id: int, db: SessionDep):
 
 
 class CRUDUser:
-    @staticmethod
-    async def create_user(user_data: UserCreate, db: SessionDep):
-        return await create_user(user_data, db)
-
-    @staticmethod
-    async def read_user_all(db: SessionDep, skip: int = 0, limit: int = 100):
-        return await read_user_all(db, skip, limit)
-
-    @staticmethod
-    async def read_user_id(user_id: int, db: SessionDep):
-        return await read_user_id(user_id, db)
-
-    @staticmethod
-    async def update_user(user_id: int, user_data: UserUpdate, db: SessionDep):
-        return await update_user(user_id, user_data, db)
-
-    @staticmethod
-    async def delete_user(user_id: int, db: SessionDep):
-        return await delete_user(user_id, db)
+    create_user = create_user
+    read_user_all = read_user_all
+    read_user_id = read_user_id
+    update_user = update_user
+    delete_user = delete_user

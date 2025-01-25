@@ -8,7 +8,7 @@ from sqlmodel import Session, select
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.user import User
+from app.models.models import User
 from app.database.db import SessionDep
 from app.core.config import settings
 

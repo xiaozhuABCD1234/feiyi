@@ -1,8 +1,8 @@
 # app/routers/auth.py
 from fastapi import APIRouter, HTTPException, status, Depends
-from app.models.user import UserCreate
+from app.models.models import User
+from app.schemas.user import UserCreate, UserRead
 from app.core.security import Security
-from app.models.user import User, UserRead
 from app.database.db import SessionDep
 from sqlmodel import select
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm

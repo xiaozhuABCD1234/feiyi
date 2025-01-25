@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from app.database.db import create_db_and_tables
-from app.routers import user, auth
+from app.routers import user, auth, post
 
 app = FastAPI()
 
 app.include_router(user.router, prefix="/users", tags=["user"])
 app.include_router(auth.router, prefix="/user/auth", tags=["auth"])
+app.include_router(post.router, prefix="/posts", tags=["post"])
 
 
 @app.on_event("startup")
