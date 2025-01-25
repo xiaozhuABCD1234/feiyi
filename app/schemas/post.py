@@ -1,34 +1,26 @@
 # app/schemas/post.py
 from pydantic import BaseModel
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from datetime import datetime
-
-if TYPE_CHECKING:
-    from .user import UserRead
 
 
 class PostBase(BaseModel):
     title: str
+    user_id: Optional[int] = None  # 使用 user_id 与模型定义一致
 
 
 class PostCreate(PostBase):
-    author_id: int
+    user_id: int  # 必须字段
 
 
 class PostRead(PostBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    author_id: int
-
-    class Config:
-        orm_mode = True
+    user_id: int  # 使用 user_id 与模型定义一致
 
 
 class PostUpdate(PostBase):
     title: Optional[str] = None
-    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    class Config:
-        orm_mode = True
+    user_id: Optional[int] = None  # 如果允许更新 user_id，保留 Optional

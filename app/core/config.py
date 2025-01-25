@@ -1,5 +1,6 @@
 # app/core/config.py
 from pydantic_settings import BaseSettings
+from typing import Dict, Any
 
 
 class Settings(BaseSettings):
@@ -17,3 +18,15 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+
+TORTOISE_ORM = {
+    "connections": {"default": "sqlite://app/data/database.db"},
+    "apps": {
+        "models": {
+            "models": ["app.models.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+    "use_tz": True,
+    "timezone": "Asia/Shanghai",
+}

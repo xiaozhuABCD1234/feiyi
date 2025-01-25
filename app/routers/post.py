@@ -1,33 +1,31 @@
-# # app/routers/post.py
-# from fastapi import APIRouter, Depends, HTTPException, status
-# from app.models.models import Post
-# from app.schemas.post import PostCreate, PostRead, PostUpdate
-# from app.crud.post import CRUDPost
-# from app.database.db import SessionDep
+# app/routers/post.py
+from fastapi import APIRouter, Depends, HTTPException
+from app.crud.post import CRUDPost
+from app.schemas.post import PostCreate, PostRead, PostUpdate
 
-# router = APIRouter()
+router = APIRouter()
 
 
-# @router.post("/", response_model=PostCreate, status_code=status.HTTP_201_CREATED)
-# async def create_post(post_data: PostCreate, db: SessionDep):
-#     return await CRUDPost.create_post(post_data, db)
+@router.post("/posts/", response_model=PostRead)
+async def create_post(post_data: PostCreate):
+    return await CRUDPost.create_post(post_data)
 
 
-# @router.get("/", response_model=list[PostRead])
-# async def get_all_posts(db: SessionDep, skip: int = 0, limit: int = 100):
-#     return await CRUDPost.read_post_all(db, skip, limit)
+@router.get("/posts/{post_id}", response_model=PostRead)
+async def read_post(post_id: int):
+    return await CRUDPost.read_post(post_id)
 
 
-# @router.get("/{post_id}", response_model=PostRead)
-# async def get_post_by_id(post_id: int, db: SessionDep):
-#     return await CRUDPost.read_post_id(post_id, db)
+@router.get("/posts/author/{author_id}", response_model=list[PostRead])
+async def read_post_author(author_id: int):
+    return await CRUDPost.read_post_author(author_id)
 
 
-# @router.put("/{post_id}", response_model=PostUpdate)
-# async def update_post_by_id(post_id: int, post_data: PostUpdate, db: SessionDep):
-#     return await CRUDPost.update_post(post_id, post_data, db)
+@router.put("/posts/{post_id}", response_model=PostRead)
+async def update_post(post_id: int, post_data: PostUpdate):
+    return await CRUDPost.update_post(post_id, post_data)
 
 
-# @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-# async def delete_post_by_id(post_id: int, db: SessionDep):
-#     return await CRUDPost.delete_post(post_id, db)
+@router.delete("/posts/{post_id}", status_code=204)
+async def delete_post(post_id: int):
+    return await CRUDPost.delete_post(post_id)

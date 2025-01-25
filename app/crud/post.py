@@ -1,69 +1,70 @@
-# # app/crud/post.py
-# from fastapi import HTTPException, status
-# from sqlmodel import Session, select
-# from typing import List, Optional
-# from datetime import datetime, timedelta, timezone
-# from app.models.models import Post
-# from app.schemas.post import PostCreate, PostRead, PostUpdate
-# from app.database.db import SessionDep
+# app/crud/post.py
+from fastapi import HTTPException
+from tortoise.query_utils import Prefetch
+from app.models.models import Post, User
+from app.schemas.post import PostCreate, PostRead, PostUpdate
 
 
-# async def create_post(post_data: PostCreate, db: SessionDep):
-#     new_post = Post.model_validate(post_data)
-#     new_post.created_at = datetime.now(timezone.utc)
-#     new_post.updated_at = datetime.now(timezone.utc)
-#     db.add(new_post)
-#     db.commit()
-#     db.refresh(new_post)
-#     return new_post
+async def _check_user_id_is_existing(user_id: int) -> User:
+    user = await User.get_or_none(id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 
-# async def read_post_user_id(user_id: int, db: SessionDep) -> List[PostRead]:
-#     posts = db.exec(select(Post).where(Post.author_id == user_id)).all()
-#     if not posts:
-#         raise HTTPException(status_code=404, detail="Posts not found")
-#     return posts
+async def create_post(post_data: PostCreate) -> PostRead:
+    await _check_user_id_is_existing(post_data.user_id)
+    post = Post(title=post_data.title, user_id=post_data.user_id)
+    await post.save()
+    return post
 
 
-# async def read_post_all(
-#     db: SessionDep, skip: Optional[int] = 0, limit: Optional[int] = 100
-# ):
-#     posts = db.exec(select(Post).offset(skip).limit(limit)).all()
-#     return posts
+async def read_post(post_id: int) -> PostRead:
+    post = await Post.get_or_none(id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
 
 
-# async def read_post_id(post_id: int, db: SessionDep) -> PostRead:
-#     post = db.get(Post, post_id)
-#     if not post:
-#         raise HTTPException(status_code=404, detail="Post not found")
-#     return post
+async def read_post_by_author(author_id: int) -> list[PostRead]:
+    await _check_user_id_is_existing(author_id)
+    posts = await Post.filter(user_id=author_id)  # 修改为 user_id
+    return [PostRead.model_validate(post) for post in posts]
 
 
-# async def update_post(post_id: int, post_data: PostUpdate, db: SessionDep):
-#     post_db = db.get(Post, post_id)
-#     if not post_db:
-#         raise HTTPException(status_code=404, detail="Post not found")
-#     post_data_dict = post_data.model_dump(exclude_unset=True)
-#     for key, value in post_data_dict.items():
-#         setattr(post_db, key, value)
-#     db.commit()
-#     db.refresh(post_db)
-#     return post_db
+async def update_post(post_id: int, post_data: PostUpdate) -> PostRead:
+    post = await Post.get_or_none(id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    await post.update_from_dict(post_data.model_dump(exclude_unset=True))
+    await post.save()
+    return post
 
 
-# async def delete_post(post_id: int, db: SessionDep):
-#     post = db.get(Post, post_id)
-#     if not post:
-#         raise HTTPException(status_code=404, detail="Post not found")
-#     db.delete(post)
-#     db.commit()
-#     return None
+async def delete_post(post_id: int) -> None:
+    post = await Post.get_or_none(id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    await post.delete()
 
 
-# class CRUDPost:
-#     create_post = create_post
-#     read_post_user_id = read_post_user_id
-#     read_post_all = read_post_all
-#     read_post_id = read_post_id
-#     update_post = update_post
-#     delete_post = delete_post
+class CRUDPost:
+    @staticmethod
+    async def create_post(post_data: PostCreate) -> PostRead:
+        return await create_post(post_data)
+
+    @staticmethod
+    async def read_post_id(post_id: int) -> PostRead:
+        return await read_post(post_id)
+
+    @staticmethod
+    async def read_post_author(author_id: int) -> list[PostRead]:
+        return await read_post_by_author(author_id)
+
+    @staticmethod
+    async def update_post(post_id: int, post_data: PostUpdate) -> PostRead:
+        return await update_post(post_id, post_data)
+
+    @staticmethod
+    async def delete_post(post_id: int) -> None:
+        return await delete_post(post_id)

@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.models.models import User
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.crud.user import CRUDUser
+
+
 router = APIRouter()
 
 
