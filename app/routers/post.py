@@ -13,7 +13,7 @@ async def create_post(post_data: PostCreate):
 
 @router.get("/posts/{post_id}", response_model=PostRead)
 async def read_post(post_id: int):
-    return await CRUDPost.read_post(post_id)
+    return await CRUDPost.read_post_id(post_id)
 
 
 @router.get("/posts/author/{author_id}", response_model=list[PostRead])
@@ -29,3 +29,8 @@ async def update_post(post_id: int, post_data: PostUpdate):
 @router.delete("/posts/{post_id}", status_code=204)
 async def delete_post(post_id: int):
     return await CRUDPost.delete_post(post_id)
+
+
+@router.get("/posts/", response_model=list[PostRead])
+async def read_post_all():
+    return await CRUDPost.read_post_all()

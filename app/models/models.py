@@ -12,7 +12,7 @@ class User(Model):
 
 class Post(Model):
     id = fields.IntField(pk=True)
-    title = fields.CharField(max_length=50)
+    title = fields.CharField(max_length=50, unique=True)
     user = fields.ForeignKeyField("models.User", related_name="posts")
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)

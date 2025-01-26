@@ -28,4 +28,4 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

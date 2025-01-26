@@ -8,7 +8,7 @@ from app.crud.user import CRUDUser
 router = APIRouter()
 
 
-@router.post("/", response_model=UserCreate, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def register_user(user_data: UserCreate):
     return await CRUDUser.create_user(user_data)
 
