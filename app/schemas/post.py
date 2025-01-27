@@ -18,6 +18,8 @@ class PostRead(PostBase):
     created_at: datetime
     updated_at: datetime
     user_id: int  # 使用 user_id 与模型定义一致
+    likes_count: int
+    favorites_count: int
     tags: Optional[List[str]] = []  # 添加 tags 字段
 
     class Config:

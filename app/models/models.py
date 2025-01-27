@@ -16,13 +16,20 @@ class Post(Model):
     user = fields.ForeignKeyField("models.User", related_name="posts")
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    likes_count = fields.BigIntField(default=0)
+    favorites_count = fields.BigIntField(default=0)
+    likes = fields.ManyToManyField("models.User", related_name="liked_posts")
+    favorites = fields.ManyToManyField("models.User", related_name="favorited_posts")
 
 
 class Comment(Model):
     id = fields.IntField(pk=True)
     text = fields.TextField()
+    time = fields.DatetimeField(auto_now=True)
+    likes_count = fields.BigIntField(default=0)
     post = fields.ForeignKeyField("models.Post", related_name="comments")
     user = fields.ForeignKeyField("models.User", related_name="comments")
+    liked_by = fields.ManyToManyField("models.User", related_name="liked_comments")  # 点赞用户
 
 
 class Tag(Model):

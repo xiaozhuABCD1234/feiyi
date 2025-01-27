@@ -20,7 +20,7 @@ settings = Settings()
 
 
 TORTOISE_ORM = {
-    "connections": {"default": "sqlite://app/data/database.db"},
+    "connections": {"default": "sqlite://./data/database.db"},
     "apps": {
         "models": {
             "models": ["app.models.models", "aerich.models"],

@@ -1,5 +1,6 @@
 # app/routers/post.py
 from fastapi import APIRouter, Depends, HTTPException
+from typing import List
 from app.crud.post import CRUDPost
 from app.schemas.post import PostCreate, PostRead, PostUpdate
 
@@ -16,7 +17,7 @@ async def read_post(post_id: int):
     return await CRUDPost.read_post_id(post_id)
 
 
-@router.get("/posts/author/{author_id}", response_model=list[PostRead])
+@router.get("/posts/author/{author_id}", response_model=List[PostRead])
 async def read_post_author(author_id: int):
     return await CRUDPost.read_post_author(author_id)
 
@@ -34,3 +35,8 @@ async def delete_post(post_id: int):
 @router.get("/posts/", response_model=list[PostRead])
 async def read_post_all():
     return await CRUDPost.read_post_all()
+
+
+@router.get("/posts/tag/{tag_id}", response_model=List[PostRead])
+async def read_post_tag(tag_id: int):
+    return await CRUDPost.read_post_tag(tag_id)

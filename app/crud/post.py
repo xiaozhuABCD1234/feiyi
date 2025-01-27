@@ -22,7 +22,12 @@ async def create_post(post_data: PostCreate) -> PostRead:
         title = f"{post_data.title} ({count})"
     post_data.title = title
 
-    post = Post(title=post_data.title, user_id=post_data.user_id)
+    post = Post(
+        title=post_data.title,
+        user_id=post_data.user_id,
+        likes_conut=0,
+        favorites_count=0,
+    )
     await post.save()
 
     # 处理 tags
@@ -102,6 +107,17 @@ async def read_post_all() -> list[PostRead]:
     ]  # 使用 model_validate 替代 dict(post)
 
 
+async def read_post_by_tag(tag_id: int) -> list[PostRead]:
+    """根据标签 ID 读取帖子列表"""
+    tag = await Tag.get_or_none(id=tag_id)
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    posts = await tag.posts.all().prefetch_related("tags")
+    return [
+        PostRead.model_validate(post) for post in posts
+    ]  # 使用 model_validate 替代 dict(post)
+
+
 class CRUDPost:
     """封装帖子操作的 CRUD 类"""
 
@@ -128,3 +144,7 @@ class CRUDPost:
     @staticmethod
     async def read_post_all() -> list[PostRead]:
         return await read_post_all()
+
+    @staticmethod
+    async def read_post_tag(tag_id: int) -> list[PostRead]:
+        return await read_post_by_tag(tag_id)
