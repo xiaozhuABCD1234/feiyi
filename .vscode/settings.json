@@ -3,7 +3,7 @@
     {
       "previewLimit": 50,
       "driver": "SQLite",
-      "database": "${workspaceFolder:feiyi}/app/data/database.db",
+      "database": "${workspaceFolder:feiyi}/data/database.db",
       "name": "database.db"
     }
   ]

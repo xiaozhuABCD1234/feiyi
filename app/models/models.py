@@ -20,6 +20,7 @@ class Post(Model):
     favorites_count = fields.BigIntField(default=0)
     likes = fields.ManyToManyField("models.User", related_name="liked_posts")
     favorites = fields.ManyToManyField("models.User", related_name="favorited_posts")
+    summary = fields.TextField(null=True)
 
 
 class Comment(Model):
@@ -29,7 +30,9 @@ class Comment(Model):
     likes_count = fields.BigIntField(default=0)
     post = fields.ForeignKeyField("models.Post", related_name="comments")
     user = fields.ForeignKeyField("models.User", related_name="comments")
-    liked_by = fields.ManyToManyField("models.User", related_name="liked_comments")  # 点赞用户
+    liked_by = fields.ManyToManyField(
+        "models.User", related_name="liked_comments"
+    )  # 点赞用户
 
 
 class Tag(Model):

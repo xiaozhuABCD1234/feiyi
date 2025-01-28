@@ -77,7 +77,7 @@ async def like_comment(comment_id: int, user_id: int):
             await comment.liked_by.add(user)  # 传递 User 实例
 
         await comment.save()
-        return CommentRead.model_validate(comment.__dict__)
+        return comment.likes_count
 
 
 class CRUDComment:
