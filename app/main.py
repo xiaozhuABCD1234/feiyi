@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise import Tortoise
 from app.core.config import TORTOISE_ORM
-from app.routers import user, auth, post, tag, comment
+from app.routers import user, auth, post, tag, comment,img
 
 app = FastAPI()
 
@@ -28,6 +28,7 @@ app.include_router(auth.router, prefix="/user/auth", tags=["auth"])
 app.include_router(post.router, prefix="/posts", tags=["post"])
 app.include_router(tag.router, prefix="/tags", tags=["tag"])
 app.include_router(comment.router, prefix="/comments", tags=["comment"])
+app.include_router(img.router, prefix="/imgs", tags=["img"])
 
 Tortoise._init_timezone(use_tz=True, timezone="Asia/Shanghai")
 register_tortoise(

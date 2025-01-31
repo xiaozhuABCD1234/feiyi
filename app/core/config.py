@@ -31,4 +31,5 @@ TORTOISE_ORM = {
     "timezone": "Asia/Shanghai",
 }
 
-markdowns_path = ".data/markdowns"
+markdowns_path = r"data/markdowns"
+imgs_path = r"data/imgs"

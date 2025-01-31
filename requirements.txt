@@ -1,14 +1,23 @@
+aerich==0.8.1
+aiofiles==24.1.0
+aiomysql==0.2.0
 aiosqlite==0.20.0
 annotated-types @ file:///work/perseverance-python-buildout/croot/annotated-types_1728386958747/work
 anyio @ file:///io/perseverance-python-buildout/croot/anyio_1731700736723/work
 argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
 argon2-cffi-bindings @ file:///croot/argon2-cffi-bindings_1736182440035/work
+asyncclick==8.1.8.0
+asyncmy==0.2.10
 atlastk==0.13.3
 bcrypt @ file:///croot/bcrypt_1736182451882/work
+beautifulsoup4==4.12.3
+bs4==0.0.2
 certifi==2024.12.14
 cffi @ file:///croot/cffi_1736182485317/work
+charset-normalizer==3.4.1
 click @ file:///work/perseverance-python-buildout/croot/click_1728387069202/work
 cryptography @ file:///io/buildout/croot/cryptography_1732913571666/work
+dictdiffer==0.9.0
 dnspython==2.7.0
 ecdsa==0.19.0
 email_validator==2.2.0
@@ -20,28 +29,36 @@ httpcore==1.0.7
 httptools==0.6.4
 httpx==0.28.1
 idna @ file:///work/perseverance-python-buildout/croot/idna_1728385935861/work
+iniconfig==2.0.0
 iso8601==2.1.0
 itsdangerous==2.2.0
 Jinja2==3.1.5
+Markdown==3.7
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
 orjson==3.10.14
+packaging==24.2
 passlib==1.7.4
+pluggy==1.5.0
 pyasn1==0.6.1
 pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
-pydantic @ file:///croot/pydantic_1734736067156/work
+pydantic==2.10.6
 pydantic-extra-types==2.10.1
 pydantic-settings==2.7.1
-pydantic_core @ file:///croot/pydantic-core_1734726052986/work
+pydantic_core==2.27.2
 Pygments==2.19.1
 PyJWT==2.10.1
-pypika-tortoise==0.3.2
+PyMySQL==1.1.1
+pypika-tortoise==0.5.0
+pytest==8.3.4
+pytest-asyncio==0.25.2
 python-dotenv==1.0.1
 python-jose==3.3.0
 python-multipart==0.0.20
 pytz==2024.2
 PyYAML==6.0.2
+requests==2.32.3
 rich==13.9.4
 rich-toolkit==0.13.2
 rsa==4.9
@@ -49,12 +66,17 @@ setuptools==75.1.0
 shellingham==1.5.4
 six @ file:///tmp/build/80754af9/six_1644875935023/work
 sniffio @ file:///work/perseverance-python-buildout/croot/sniffio_1728386342155/work
+soupsieve==2.6
 SQLAlchemy==2.0.37
 sqlmodel==0.0.22
 starlette==0.41.3
+tomli_w==1.2.0
+tomlkit==0.13.2
+tortoise-orm==0.24.0
 typer==0.15.1
 typing_extensions @ file:///croot/typing_extensions_1734714854207/work
 ujson==5.10.0
+urllib3==2.3.0
 uvicorn @ file:///croot/uvicorn-split_1732660726596/work
 uvloop==0.21.0
 watchfiles==1.0.4

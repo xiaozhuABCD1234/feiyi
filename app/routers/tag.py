@@ -9,11 +9,11 @@ from app.schemas.post import PostRead
 router = APIRouter()
 
 
-@router.get("/tag", response_model=List[TagRead])
+@router.get("/", response_model=List[TagRead])
 async def read_tags():
     return await CRUDTag.read_tags()
 
 
-@router.get("/tag/{tag_id}", response_model=List[PostRead])
+@router.get("/{tag_id}", response_model=List[PostRead])
 async def read_post_tag(tag_id: int):
     return await CRUDPost.read_post_by_tag(tag_id)
