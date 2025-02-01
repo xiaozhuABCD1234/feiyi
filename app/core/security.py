@@ -89,3 +89,24 @@ class Security:
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
             )
         return user
+
+    @staticmethod
+    async def check_user_permissions(current_user: User, target_user_id: int) -> None:
+        """检查当前用户是否有权限操作目标用户"""
+        if current_user.id != target_user_id and current_user.permissions != "admin":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to perform this action",
+            )
+
+
+async def verify_user_permissions(
+    user_id: int, current_user: User = Depends(Security.get_current_user)
+):
+    """依赖项：验证当前用户是否有权限操作目标用户"""
+    if current_user.id != user_id and current_user.permissions != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to perform this action",
+        )
+    return current_user

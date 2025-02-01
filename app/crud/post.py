@@ -14,6 +14,15 @@ async def _check_user_id_is_existing(user_id: int) -> User:
 
 
 class CRUDPost:
+    @staticmethod
+    async def get_likes_count(post_id) -> int:
+        post = await Post.get(id=post_id).prefetch_related("likes")
+        return await post.likes.all().count()
+
+    @staticmethod
+    async def get_favorites_count(post_id) -> int:
+        post = await Post.get(id=post_id).prefetch_related("favorites")
+        return await post.favorites.all().count()
 
     @staticmethod
     async def create_post(post_data: PostCreate, summary: str) -> PostRead:

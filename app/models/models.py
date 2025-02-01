@@ -8,7 +8,7 @@ class User(Model):
     name = fields.CharField(max_length=50, unique=True)
     password = fields.CharField(max_length=60)
     email = fields.CharField(max_length=50, unique=True)
-
+    permissions = fields.CharField(max_length=50, default="user")
 
 class Post(Model):
     id = fields.IntField(pk=True)

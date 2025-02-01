@@ -9,11 +9,14 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///database.db"
     # JWT 配置
     SECRET_KEY: str = (
-        "a2915205d7012894c9e9a6997d9000e15f982c52236e23fb53458ce0d00a79f5"  # openssl rand -hex 32
+        "1c645c96c2ba8ab716a7672f7314c4351d02accf92e3c6658588732003a40fdf"  # openssl rand -hex 32
     )
 
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60000
+
+    # # 是否开启权限验证
+    # closs_verify_user_permissions = True
 
 
 settings = Settings()

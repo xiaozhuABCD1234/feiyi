@@ -5,6 +5,7 @@ import markdown
 from bs4 import BeautifulSoup
 from app.crud.post import CRUDPost
 from app.schemas.post import PostCreate, PostRead, PostUpdate
+from app.core.security import Security
 
 router = APIRouter()
 
@@ -51,5 +52,3 @@ async def delete_post(post_id: int):
 @router.get("/", response_model=list[PostRead])
 async def read_post_all():
     return await CRUDPost.read_post_all()
-
-
