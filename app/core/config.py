@@ -4,7 +4,7 @@ from typing import Dict, Any
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "FastAPI Demo"
+    PROJECT_NAME: str = "Feiyi Demo"
 
     DATABASE_URL: str = "sqlite:///database.db"
     # JWT 配置
@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     )
 
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60000
-
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_DAYS: int = 180
     # # 是否开启权限验证
     # closs_verify_user_permissions = True
 

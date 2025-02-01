@@ -20,6 +20,7 @@ class TagRead(BaseModel):
         # 如果 v 是 ManyToManyRelation，提取帖子 ID
         return [post.name for post in v]
 
+
 class TagBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=50, description="标签名称")
 
@@ -32,4 +33,3 @@ class TagUpdate(BaseModel):
     name: Optional[str] = Field(
         None, min_length=1, max_length=50, description="标签名称"
     )
-    posts: Optional[List[int]] = Field(None, description="与标签关联的帖子 ID 列表")

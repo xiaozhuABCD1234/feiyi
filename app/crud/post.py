@@ -5,12 +5,11 @@ from app.models.models import Post, User, Tag
 from app.schemas.post import PostCreate, PostRead, PostUpdate
 
 
-async def _check_user_id_is_existing(user_id: int) -> User:
+async def _check_user_id_is_existing(user_id: int) -> None:
     # 检查用户是否存在，如果不存在则抛出 404 错误
     user = await User.get_or_none(id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
 
 
 class CRUDPost:
